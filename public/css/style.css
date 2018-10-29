@@ -45,6 +45,10 @@ div.centerBox{
     border-top:solid grey 1px;
     padding-top:10px;
 }
+.delBtn{
+    padding: 0px 5px;
+    font-size: 15px;
+}
 
 /* ID Level */
 

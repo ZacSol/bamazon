@@ -131,6 +131,11 @@ $("#checkoutBtn").on('click',function(){
     console.log("You asked to check out.");
 
 })
+// Updates quantites in the cart
+$("#cartDump").on('change','.quantity-dropdown',function(){
+    // console.log("changed quantity");
+    console.log($(this).val(),$(this).attr.id);
+})
 
 // // at page load, grab items from server then render all product data to display
 getData();

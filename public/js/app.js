@@ -22,7 +22,7 @@ function displayItems(productList){
     itemsDump.empty();
     productList.forEach(function(product){
         // console.log(product);
-        itemsDump.append(`<div class="itemContainer"><div class="row"><div class="col-3 centerBox"><img class="resize" src="${product.imageUrl}"></div><div class="col-7"><h3>${product.name}</h3><h5>$${product.price}</h5><p>${product.availQty} Available</p></div><div class="col-2 centerBox"><button type="button" class="btn btn-secondary addBtn" id="add${product.id}" value="${product.id}">Add to Cart</button></div></div></div><br>`);
+        itemsDump.append(`<div class="itemContainer"><div class="row"><div class="col-3 centerBox"><img class="resize" src="${product.imageUrl}"></div><div class="col-7"><h3>${product.name}</h3><h5>$${product.price}</h5></div><div class="col-2 centerBox"><button type="button" class="btn btn-secondary addBtn" id="add${product.id}" value="${product.id}">Add to Cart</button></div></div></div><br>`);
     });
 };
 
@@ -82,7 +82,30 @@ function displayCart(cartList){
     }
     cartList.forEach(function(product){
         // console.log(product);
-        cartDump.append(`<div class="cartItemContainer"><div class="row"><div class="col-3 centerBox"><img class="cartSize" src="${product.imageUrl}"></div><div class="col-6"><h3>${product.name}</h3><p>${product.availQty} Available</p><button type="button" class="btn btn-warning delBtn" id="remove${product.id}" value="${product.id}">Remove</button></div><div class="col-3 centerBox"></div></div></div><br>`);
+        
+        
+
+        // create dropdown object that displays as many options as there are items available
+        let dropdown= `<span class="a-dropdown-container"><label class="a-native-dropdown"><span class="sc-offscreen-label" aria-label="Quantity"></span></label><select
+        name="quantity" autocomplete="off" data-a-touch-header="Quantity" tabindex="-1" class="quantity-dropdown" id="dropdown${product.id}">
+    
+    
+        <option value="1" data-a-css-class="quantity-option" selected="">
+          1
+        </option>`;
+
+        if(product.availQty>1){
+            for(let i=2;i<=product.availQty;i++){
+                dropdown+= `<option value="${i}" data-a-css-class="quantity-option">
+                ${i}
+              </option>`
+            }
+        }
+
+        dropdown+=`</select></span>`
+
+
+        cartDump.append(`<div class="cartItemContainer"><div class="row"><div class="col-3 centerBox"><img class="cartSize" src="${product.imageUrl}"></div><div class="col-6"><h3>${product.name}</h3><p>${product.availQty} Available</p><button type="button" class="btn btn-warning delBtn" id="remove${product.id}" value="${product.id}">Remove</button></div><div class="col-3"><br>$${product.buying*product.price}<br><br>${dropdown}</div></div></div><br>`);
     });
 };
 

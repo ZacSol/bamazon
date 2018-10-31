@@ -33,7 +33,7 @@ img.cartSize{
 .center{
     text-align: center;
 }
-div.centerBox{
+.centerBox{
     display: flex;
   align-items: center;
   justify-content: center;

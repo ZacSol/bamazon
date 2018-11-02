@@ -49,9 +49,15 @@ img.cartSize{
     padding: 0px 5px;
     font-size: 15px;
 }
+.flRight{
+    float: right;
+}
 
 /* ID Level */
 
 #itemsDump{
     margin:0px 10%;
+}
+#subTotal{
+    padding-left: 7px;
 }

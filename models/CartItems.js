@@ -1,5 +1,5 @@
 module.exports=function(sequelize,DataTypes){
-    const Products=sequelize.define("Products",{
+    const CartItems=sequelize.define("CartItems",{
         name:{
             type:DataTypes.STRING,
             allowNull:false
@@ -12,16 +12,18 @@ module.exports=function(sequelize,DataTypes){
             type:DataTypes.INTEGER
         },
         imageUrl:{
-            type:DataTypes.STRING,
+            type:DataTypes.STRING
         },
         department:{
             type:DataTypes.STRING,
             allowNull:false
+        },
+        buying:{
+            type:DataTypes.INTEGER,
+            allowNull:false
         }
-    }
-    ,{timestamps:false}
+    },
+    {timestamps:false}
     );
-
-
-    return Products;
+    return CartItems;
 };

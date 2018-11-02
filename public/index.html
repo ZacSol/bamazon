@@ -12,7 +12,10 @@
 <body>
     <nav class="navbar navbar-light bg-light fixed-top">
         <a class="navbar-brand" href="#">Wham!azon</a>
-        <a><i class="fas fa-shopping-cart" id="cartIcon" data-toggle="modal" href="#myModal"></i></a>
+        
+        <div class="wrapper">
+          <h6 class="flRight" id="numInCart">0</h6>
+          <a><i class="fas fa-shopping-cart flRight" id="cartIcon" data-toggle="modal" href="#myModal"></i></a></div>
     </nav>
 
     <div id="itemsDump"></div>
@@ -27,9 +30,12 @@
               </button>
             </div>
             <div class="modal-body" id='cartDump'></div>
+            <div class="row">
+              <div class="col-9"></div>
+            <div class="col-3" id="subTotal"></div>            
+            </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" id="checkoutBtn" data-dismiss="modal">Checkout</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>

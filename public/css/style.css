@@ -1,6 +1,6 @@
 /* Element Level */
 body{
-    padding-top:55px;
+    padding-top:85px;
 }
 
 button{
@@ -60,4 +60,7 @@ img.cartSize{
 }
 #subTotal{
     padding-left: 7px;
+}
+#navLogo{
+    max-height: 60px;
 }

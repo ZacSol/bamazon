@@ -18,6 +18,12 @@ function getData() {
         });
     $.get("/api/cart")
         .then(function(response){
+            // checks that the item's id attribute matches the original product's id
+            response.forEach(function(item){
+                if(item.productId){
+                    item.id=item.productId;
+                };
+            });
             cart=response;
             updateCartIcon();
         })
@@ -46,6 +52,7 @@ function findWithAttr(array, attribute, value) {
 
 // takes an id and adds that product to the cart
 function addToCart(itemId) {
+    // console.log(cart);
     // console.log(itemId,typeof(itemId));
     // console.log(typeof(products[0].id));
     // console.log(products[findWithAttr(products,'id',parseInt(itemId))]);
@@ -56,11 +63,12 @@ function addToCart(itemId) {
     if (cart.length === 0) {
         cart.push(newItem);
         // console.log(cart);
-        updateCartIcon();        
+        updateCartIcon();  
+        postToCartDb(newItem);      
     }
     else {
         cart.forEach(function(item){
-            if(item===newItem){
+            if(item.id===newItem.id){
                 // console.log("already here");
                 exists=true;
                 return;
@@ -69,6 +77,7 @@ function addToCart(itemId) {
         if (exists === false) {
             cart.push(newItem);
             updateCartIcon();
+            postToCartDb(newItem);
         }
         else{
             alert("This item is already in the cart, please update quantity there.");
@@ -76,11 +85,38 @@ function addToCart(itemId) {
     }
 };
 
+// adds item to the cart db
+function postToCartDb(itemObject){
+    // console.log(itemObject);
+    newObject={
+        name:itemObject.name,
+        productId:itemObject.id,
+        price:itemObject.price,
+        availQty:itemObject.availQty,
+        imageUrl:itemObject.imageUrl,
+        department:itemObject.department,
+        buying:itemObject.buying
+    }
+    $.post("/api/cart", newObject, function(res){
+        // console.log(res);
+        if (res.success) {
+        }
+        else {
+            alert("There was an error sending to the cartDb.");
+        };
+    });
+};
+
+// item exists in db and buying quantity updated
+// function updateCartDbQuantity(){
+//     $.put("/api/cart",)
+// };
+
 function updateCartIcon(){
     let number=0;
     cart.forEach(function(item){
         number+=item.buying;
-    })
+    });
     $("#numInCart").text(number);
 };
 
@@ -93,6 +129,24 @@ function removeFromCart(itemId){
     // console.log(cart);
     displayCart(cart);
     updateCartIcon();
+    cartDbDelete(itemId);
+};
+
+function cartDbDelete(itemId){
+    // console.log(itemId);
+    $.ajax({
+        url:`/api/cart/${itemId}`,
+        method:"DELETE"
+    })
+    .then(function(res){
+        if(res.success){
+            // alert("Item successfully removed from cart.");
+            // console.log(cart);
+        }
+        else{
+            alert("Unable to remove from cartDb.");
+        };
+    });
 };
 
 // Empties cart display then renders new; if cart empty displays text
@@ -153,7 +207,7 @@ function findSubTotal(){
 function updateCart(id,quantity){
     // console.log("ID: "+id);
     // console.log("Quantity: "+quantity);
-    let itemToUpdate=products[findWithAttr(products, 'id', parseInt(id))];
+    let itemToUpdate=cart[findWithAttr(cart, 'id', parseInt(id))];
     // console.log(itemToUpdate);
     itemToUpdate.buying=parseInt(quantity);
     // console.log(itemToUpdate.buying);
@@ -164,16 +218,46 @@ function updateCart(id,quantity){
     // Update visible subtotal with every quantity change
     findSubTotal();
     updateCartIcon();
+    updateCartDbItemBuyQuantity(id,quantity);
+}
+
+function updateCartDbItemBuyQuantity(productId,buyingQuantity){
+    // console.log(productId);
+    $.ajax({
+        url:`/api/cart/${productId}`,
+        method:"PUT",
+        data:{buying:buyingQuantity}
+    })
+    .then(function(response){
+        if(response.success){
+            // alert("The quantity has been successfully updated.");
+        }
+        else{
+            alert('There was a problem updating the cartDb quantity.');
+        }
+    })
 }
 
 function checkoutPurchase(cartArr){
     // Check to see if cart is empty
     if(cartArr.length<1){
-        alert("You didn't put any items in the cart.");
+        alert("There are no items in the cart.");
     }
     // If cart has things, do things
-    
-}
+    else {
+        // console.log(cart);
+        cart.forEach(function (item) {
+            // console.log(item);
+            $.get(`/api/cart/${item.id}`)
+                .then(function (response) {
+                    // console.log(response);
+                    if (response.availQty < item.buying) {
+                        alert(`There are only ${response.availQty} ${item.name} available, please update your cart quantity.`);
+                    };
+                });
+        });
+    };
+};
 
 // // Event Handlers
 // Displays cart

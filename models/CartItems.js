@@ -4,6 +4,10 @@ module.exports=function(sequelize,DataTypes){
             type:DataTypes.STRING,
             allowNull:false
         },
+        productId:{
+            type:DataTypes.INTEGER,
+            allowNull:false
+        },
         price:{
             type:DataTypes.DECIMAL(10,2),
             allowNull:false

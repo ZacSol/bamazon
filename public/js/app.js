@@ -155,18 +155,21 @@ function displayCart(cartList){
     if(cartList.length===0){
         cartDump.text("There are no items in the cart.");
     }
-    cartList.forEach(function(product){
-        // console.log(product);
-        
+    cartList.forEach(function(item){
+        // console.log(item);
+        // console.log(products[findWithAttr(products,'id',item.id)].availQty);
+        if(item.buying>products[findWithAttr(products,"id",item.id)].availQty&&products[findWithAttr(products,"id",item.id)].availQty!==1){
+            item.availQty=products[findWithAttr(products,"id",item.id)].availQty;
+        }
         
 
         // create dropdown object that displays as many options as there are items available
         let dropdown= `<span class="a-dropdown-container"><label class="a-native-dropdown"><span class="sc-offscreen-label" aria-label="Quantity"></span></label><select
-        name="quantity" autocomplete="off" data-a-touch-header="Quantity" tabindex="-1" class="quantity-dropdown" id="dropdown ${product.id}">`
+        name="quantity" autocomplete="off" data-a-touch-header="Quantity" tabindex="-1" class="quantity-dropdown" id="dropdown ${item.id}">`
 
-        if(product.availQty>0){
-            for(let i=1;i<=product.availQty;i++){
-                if(i===product.buying){
+        if(item.availQty>0){
+            for(let i=1;i<=item.availQty;i++){
+                if(i===item.buying){
                     dropdown+= `<option value="${i}" data-a-css-class="quantity-option" selected="">
                 ${i}
               </option>`;
@@ -181,9 +184,9 @@ function displayCart(cartList){
 
         dropdown+=`</select></span>`
 
-        let mathCost=product.buying*product.price;
+        let mathCost=item.buying*item.price;
 
-        cartDump.append(`<div class="cartItemContainer"><div class="row"><div class="col-3 centerBox"><img class="cartSize" src="${product.imageUrl}"></div><div class="col-6"><h6>${product.name}</h6><button type="button" class="btn btn-warning delBtn" id="remove${product.id}" value="${product.id}">Remove</button></div><div class="col-3"><br><div id="cost${product.id}">$${mathCost.toFixed(2)}</div><br><br>${dropdown}</div></div></div><br>`);
+        cartDump.append(`<div class="cartItemContainer"><div class="row"><div class="col-3 centerBox"><img class="cartSize" src="${item.imageUrl}"></div><div class="col-6"><h6>${item.name}</h6><button type="button" class="btn btn-warning delBtn" id="remove${item.id}" value="${item.id}">Remove</button></div><div class="col-3"><br><div id="cost${item.id}">$${mathCost.toFixed(2)}</div><br><br>${dropdown}</div></div></div><br>`);
     });
     findSubTotal();
     updateCartIcon();
@@ -246,15 +249,16 @@ function checkoutPurchase(cartArr){
     // If cart has things, do things
     else {
         // console.log(cart);
+        let ids=[];
         cart.forEach(function (item) {
             // console.log(item);
-            $.get(`/api/cart/${item.id}`)
-                .then(function (response) {
-                    // console.log(response);
-                    if (response.availQty < item.buying) {
-                        alert(`There are only ${response.availQty} ${item.name} available, please update your cart quantity.`);
-                    };
-                });
+            ids.push(item.id);
+        });
+        console.log(ids);
+        // console.log("all things checked");
+        $.get('/api/cart/checkout',ids)
+        .then(function(response){
+            console.log(response);
         });
     };
 };

@@ -1,4 +1,6 @@
 const db=require('../models');
+const Sequelize=require('sequelize');
+const Op=Sequelize.Op;
 
 module.exports=function(app){
     // used to get all products for home page
@@ -19,15 +21,25 @@ module.exports=function(app){
     });
 
     // req itemId and res availQty
-    app.get('/api/cart/:id',function(req,res){
-        db.Products.findOne({where:{id:req.params.id}})
-        .then(function(data){
-            let returnData={
-                productId:data.id,
-                name:data.name,
-                availQty:data.availQty
+    app.get('/api/cart/checkout', function (req, res) {
+        console.log(req);
+        let idArr=[1,2,3];
+        db.Products.findAll({
+            where: {
+                id: {
+                    [Op.or]:idArr
+                    // [Op.or]:
+                }
             }
-            res.json(returnData);
+        })
+        .then(function(data){
+            // let returnData={
+            //     productId:data.id,
+            //     name:data.name,
+            //     availQty:data.availQty
+            // }
+            // res.json(returnData);
+            res.json(data);
         });
     });
 

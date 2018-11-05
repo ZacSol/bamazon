@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wham!azon Manager</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+        crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="/"><img id="navLogo" src="./assets/Wham!azon.png" alt="Wham!azon Logo"></a>
+    </nav>
+    <div class="container" id="managerContainer">
+        <div class="row">
+            <!-- navbar should be here -->
+            <div class="col-2 float" id="siteNav">
+                <nav class="nav flex-column text-center h-100">
+                    <i class="fas fa-box-open" id="boxIcon"></i>
+                    <a class="nav-link active" href="#" id="view">VIEW PRODUCTS</a>
+                    <a class="nav-link" href="javascript:;" id='low'>VIEW LOW STOCK</a>
+                    <a class="nav-link" href="javascript:;" id='new'>ADD NEW PRODUCT</a>
+                    <a class="nav-link" href="javascript:;" id='update'>ADD TO INVENTORY</a>
+                    <a class="nav-link" href="javascript:;" id='delete'>REMOVE PRODUCT</a>
+                </nav>
+            </div>
+            <!-- this will contain the rest of the site content -->
+            <div class="col" id="bars">
+                <!-- Adding bars go in this row -->
+                <div class="hidden row" id="addBar">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="Name" id="addName">
+                        <input type="text" class="form-control" placeholder="Price" id="addPrice">
+                        <input type="text" class="form-control" placeholder="Quantity" id="addQuantity">
+                        <input type="text" class="form-control" placeholder="Image Link" id="addImage">
+                        <input type="text" class="form-control" placeholder="Department" id="addDepartment">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="addBtn">Add</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Update Bar here -->
+                <div class="hidden row" id="upBar">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="Product ID" id="updateId">
+                        <input type="text" class="form-control" placeholder="New Quantity" id="updateQuantity">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="upBtn">Update</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Delete bar here -->
+                <div class="hidden row" id="deleteBar">
+                    <div class="col">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" placeholder="Product ID" id="deleteId">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="deleteBtn">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Meat and Potatoes -->
+                <div class="row">
+                    <div class="col" id="products"></div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+        <script src="./js/manager.js"></script>
+</body>
+</html>

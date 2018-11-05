@@ -12,6 +12,18 @@ module.exports=function(app){
         });
     });
 
+    app.get('/api/products/low',function(req,res){
+        db.Products.findAll({
+            where:{
+                availQty:{
+                    [Op.lt]:5,
+                }
+            }
+        }).then(function(data){
+            res.json(data);
+        });
+    });
+
     // used to grab any items previously added to the cartDb  
     app.get('/api/cart',function(req,res){
         db.CartItems.findAll({})
@@ -43,6 +55,17 @@ module.exports=function(app){
         });
     });
 
+    // adds item to the productDb
+    app.post('/api/products', function (req, res) {
+        db.Products.create(req.body)
+            .then(function (rows) {
+                res.json({ success: true });
+            })
+            .catch(function (error) {
+                res.json({ error: error });
+            });
+    });
+
     // adds item to the cartDb
     app.post('/api/cart', function (req, res) {
         // res.send("did a thing");
@@ -55,6 +78,19 @@ module.exports=function(app){
             .catch(function (error) {
                 res.json({ error: error })
             });
+    });
+
+    // manager is able to change available quantity
+    app.put('/api/manager/:id',function(req,res){
+        db.Products.update(req.body,{
+            where:{
+                id:req.params.id
+            }
+        }).then(function(response){
+            res.json({success:true});
+        }).catch(function(err){
+            res.json({error:err});
+        });
     });
 
     // updates cartDb buying quantity
@@ -72,6 +108,19 @@ module.exports=function(app){
     app.put('/api/cart/checkout/:id',function(req,res){
         db.Products.update(req.body,{
             where:{id:req.params.id}
+        }).then(function(response){
+            res.json({success:true});
+        }).catch(function(err){
+            res.json({error:err});
+        });
+    });
+
+    // manager is able to remove products from sale
+    app.delete("/api/manager/:id",function(req,res){
+        db.Products.destroy({
+            where:{
+                id:req.params.id
+            }
         }).then(function(response){
             res.json({success:true});
         }).catch(function(err){

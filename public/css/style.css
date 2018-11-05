@@ -9,6 +9,9 @@ button{
 
 
 /* Class Level */
+.hidden{
+    display: none;
+}
 
 .footer {
     position: fixed;
@@ -23,7 +26,13 @@ img.resize {
     padding:0px;
     max-width:180px;
     max-height:180px;
-  }
+}
+
+img.managerResize{
+    padding:0px;
+    max-width:75px;
+    max-height:75px;
+}
 
 img.cartSize{
     max-width:90px;
@@ -42,7 +51,7 @@ img.cartSize{
     padding : 0px 20px;
 }
 .itemContainer{
-    border-top:solid grey 1px;
+    border-bottom:solid grey 1px;
     padding-top:10px;
 }
 .delBtn{
@@ -51,6 +60,12 @@ img.cartSize{
 }
 .flRight{
     float: right;
+}
+.productInfo{
+    padding:0px;
+}
+.left35{
+    padding-left: 35px;
 }
 
 /* ID Level */
@@ -63,4 +78,31 @@ img.cartSize{
 }
 #navLogo{
     max-height: 60px;
+}
+#siteNav{
+    background-color: #f8f9fa;
+    font-size: 15px;
+    height: 100vh;
+}
+#managerContainer{
+    padding-top: 1px;
+    margin:0px;
+}
+#boxIcon{
+    font-size: 25px;
+    padding-top: 100px;
+    padding-bottom: 5px;
+}
+#bars{
+    margin-left: 10px;
+}
+#deleteBar{
+    margin:5px 30%;
+}
+#upBar{
+    margin:5px 10%;
+}
+#addBar{
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

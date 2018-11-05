@@ -33,25 +33,18 @@ module.exports=function(app){
         });
     });
 
-    // req itemId and res availQty
+    // get data on specific ids
     app.get('/api/cart/checkout', function (req, res) {
-        console.log(req);
-        // let idArr=[1,2,3];
+        // console.log(req);
+        // console.log("req.query");
+        // console.log(req.query);
+        // console.log(req.query.ids);
         db.Products.findAll({
             where: {
-                id: {
-                    [Op.or]:[1,2]
-                    // [Op.or]:
-                }
+                    [Op.or]:req.query.ids
             }
         })
         .then(function(data){
-            // let returnData={
-            //     productId:data.id,
-            //     name:data.name,
-            //     availQty:data.availQty
-            // }
-            // res.json(returnData);
             res.json(data);
         });
     });
@@ -137,6 +130,17 @@ module.exports=function(app){
             res.json({ success: true });
         }).catch(function (error) {
             res.json({ error: error });
+        });    
+    });
+
+    // empties cartDb on checkout
+    app.delete('/api/checkout/cart/',function(req,res){
+        db.CartItems.destroy({
+            where:{}
+        }).then(function(){
+            res.json({success:true});
+        }).catch(function(err){
+            res.json({error:err});
         });
     });
 };

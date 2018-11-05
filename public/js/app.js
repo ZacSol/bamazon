@@ -241,29 +241,83 @@ function updateCartDbItemBuyQuantity(productId,buyingQuantity){
     })
 }
 
-function checkoutPurchase(cartArr){
+function regularSort(a, b) {
+    // used to sort the cart array and make easier to loop through
+    const idA = a.id;
+    const idB = b.id;
+  
+    let comparison = 0;
+    if (idA > idB) {
+      comparison = 1;
+    } else if (idA < idB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
+function checkoutPurchase(cartArr) {
     // Check to see if cart is empty
-    if(cartArr.length<1){
+    if (cartArr.length < 1) {
         alert("There are no items in the cart.");
     }
     // If cart has things, do things
     else {
         // console.log(cart);
-        let ids="";
+        let ids = [];
         cart.forEach(function (item) {
             // console.log(item);
-            ids+=`,${item.id}`;
+            ids.push({ id: `${item.id}` });
         });
-        console.log(ids);
-        // console.log("all things checked");
+        // console.log(ids);
         $.ajax({
-            url:'/api/cart/checkout',
-            method:"GET",
-            data:ids
+            url: '/api/cart/checkout',
+            method: "GET",
+            data: { ids }
         })
-        .then(function(response){
-            // console.log(response);
-        });
+            .then(function (response) {
+                // console.log("response:");
+                // console.log(response);
+                // console.log('cart:');
+                cart.sort(regularSort);
+                // console.log(cart);
+                let enough = true;
+                for (let i = 0; i < cart.length; i++) {
+                    // trying to buy more than available
+                    if (cart[i].buying > response[i].availQty) {
+                        enough = false;
+                        alert("There is not enough in stock for one of your items.");
+                    };
+                };
+                if (enough) {
+                    // alert("There are enough of all the products.");
+                    // there are enough of the items, update the database quantity
+                    // console.log(cart);
+                    for (let i = 0; i < cart.length; i++) {
+                        // console.log(response[i].availQty-cart[i].buying);
+                        let newQuantitiy=response[i].availQty-cart[i].buying;
+                        // console.log(cart[i].id,newQuantitiy);
+                        $.ajax({
+                            url:`/api/cart/checkout/${cart[i].id}`,
+                            method:"PUT",
+                            data:{availQty:newQuantitiy}
+                        }).then(function(res){
+                            if(res.success){
+                                // console.log(`Quantity updated for item ${cart[i].id}`);
+                                getData();
+                            }
+                            else{
+                                alert("Something went wrong.");
+                            };
+                        });
+                    };
+                    $.ajax({
+                        url:'/api/checkout/cart/',
+                        method:"DELETE"
+                    }).then(function(response){
+                        // console.log(response);
+                    });
+                };
+            });
     };
 };
 

@@ -12,6 +12,7 @@ module.exports=function(app){
         });
     });
 
+    // find low stock products
     app.get('/api/products/low',function(req,res){
         db.Products.findAll({
             where:{
@@ -35,11 +36,11 @@ module.exports=function(app){
     // req itemId and res availQty
     app.get('/api/cart/checkout', function (req, res) {
         console.log(req);
-        let idArr=[1,2,3];
+        // let idArr=[1,2,3];
         db.Products.findAll({
             where: {
                 id: {
-                    [Op.or]:idArr
+                    [Op.or]:[1,2]
                     // [Op.or]:
                 }
             }

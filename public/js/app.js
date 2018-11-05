@@ -249,16 +249,20 @@ function checkoutPurchase(cartArr){
     // If cart has things, do things
     else {
         // console.log(cart);
-        let ids=[];
+        let ids="";
         cart.forEach(function (item) {
             // console.log(item);
-            ids.push(item.id);
+            ids+=`,${item.id}`;
         });
         console.log(ids);
         // console.log("all things checked");
-        $.get('/api/cart/checkout',ids)
+        $.ajax({
+            url:'/api/cart/checkout',
+            method:"GET",
+            data:ids
+        })
         .then(function(response){
-            console.log(response);
+            // console.log(response);
         });
     };
 };

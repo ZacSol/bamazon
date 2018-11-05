@@ -13,6 +13,11 @@ button{
     display: none;
 }
 
+.fixed{
+    position: fixed;
+    z-index: 5;
+};
+
 .footer {
     position: fixed;
     left: 0;
@@ -96,13 +101,20 @@ img.cartSize{
 #bars{
     margin-left: 10px;
 }
+#leftGap{
+    margin:10px;
+}
+#addBar,#upBar,#deleteBar{
+    z-index: 1031;
+    top:20px;
+    margin:5px 0px;
+}
 #deleteBar{
-    margin:5px 30%;
+    margin-left:23%;
 }
 #upBar{
-    margin:5px 10%;
+    margin-left: 17%;
 }
 #addBar{
-    margin-top: 5px;
-    margin-bottom: 5px;
+
 }

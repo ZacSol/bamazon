@@ -20,20 +20,21 @@
     <div class="container" id="managerContainer">
         <div class="row">
             <!-- navbar should be here -->
-            <div class="col-2 float" id="siteNav">
+            <div class="col-2 fixed" id="siteNav">
                 <nav class="nav flex-column text-center h-100">
                     <i class="fas fa-box-open" id="boxIcon"></i>
                     <a class="nav-link active" href="#" id="view">VIEW PRODUCTS</a>
                     <a class="nav-link" href="javascript:;" id='low'>VIEW LOW STOCK</a>
                     <a class="nav-link" href="javascript:;" id='new'>ADD NEW PRODUCT</a>
-                    <a class="nav-link" href="javascript:;" id='update'>ADD TO INVENTORY</a>
+                    <a class="nav-link" href="javascript:;" id='update'>CHANGE QUANTITY</a>
                     <a class="nav-link" href="javascript:;" id='delete'>REMOVE PRODUCT</a>
                 </nav>
             </div>
+            <div class="col-2" id="leftGap"></div>
             <!-- this will contain the rest of the site content -->
             <div class="col" id="bars">
                 <!-- Adding bars go in this row -->
-                <div class="hidden row" id="addBar">
+                <div class="hidden fixed row" id="addBar">
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control" placeholder="Name" id="addName">
                         <input type="text" class="form-control" placeholder="Price" id="addPrice">
@@ -46,7 +47,7 @@
                     </div>
                 </div>
                 <!-- Update Bar here -->
-                <div class="hidden row" id="upBar">
+                <div class="hidden fixed row" id="upBar">
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control" placeholder="Product ID" id="updateId">
                         <input type="text" class="form-control" placeholder="New Quantity" id="updateQuantity">
@@ -56,7 +57,7 @@
                     </div>
                 </div>
                 <!-- Delete bar here -->
-                <div class="hidden row" id="deleteBar">
+                <div class="hidden fixed row" id="deleteBar">
                     <div class="col">
                         <div class="input-group input-group-sm">
                             <input type="text" class="form-control" placeholder="Product ID" id="deleteId">

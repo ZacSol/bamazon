@@ -26,15 +26,39 @@ function getLowData(){
     });
 };
 
-function postNewProduct(){
-    let newProduct={
-        name:$("#addName").val().trim(),
-        price:$("#addPrice").val().trim(),
-        availQty:$("#addQuantity").val().trim(),
-        imageUrl:$("#addImage").val().trim(),
-        department:$("#addDepartment").val().trim()
+function validateNewProduct(newProduct){
+    // check if any field is blank
+    if(newProduct.name===""||newProduct.price===""||newProduct.availQty===""||newProduct.imageUrl===""||newProduct.department===""){
+        alert("Please fill out all fields.");
+    }
+    else{
+        // all fields are filled
+        if(!parseFloat(newProduct.price)||!parseInt(newProduct.availQty)){
+            alert("Enter a number for both the ID and quantity fields.");
+        }
+        else{
+            // price and quantity are numbers
+            postNewProduct(newProduct);
+        };
     };
+};
+
+function postNewProduct(newProduct){
     console.log(newProduct);
+    $.ajax({
+        url:"api/manager/products",
+        method:"POST",
+        data:newProduct
+    }).then(function(response){
+        // console.log(response);
+        if(response.success){
+            getData();
+        }
+        else{
+            alert("Product was not added, please try again.");
+        }
+    });
+
 };
 
 function validateUpdate(id,quantity){
@@ -61,12 +85,17 @@ function validateUpdate(id,quantity){
             });
             if(exists){
                 changeQuantity(id,quantity);
+            }
+            else{
+                alert("The entered ID is invalid in this view. Please try again.");
             };
         };
     }; 
 };
 
+
 function normalOrLow(){
+    // renders the updated list depending on whichever view was previously rendered
     if(currentView==="view"){
         getData();
     }
@@ -93,8 +122,47 @@ function changeQuantity(id,quantity){
     })
 };
 
-function removeProduct(itemId){
+function validateDelete(id){
+    if(id===""){
+        alert("Please enter the ID of the product.");
+    }
+    else{
+        // check that input is a number
+        if(!parseInt(id)){
+            alert("Enter a number for the ID.");
+        }
+        else{
+            // it is a number, check that it exists in products list
+            let exists=false;
+            // console.log(products);
+            products.forEach(function(item){
+                // console.log(item.id);
+                if(parseInt(id)===item.id){
+                    exists=true;
+                };
+            });
+            if(exists){
+                removeProduct(id);
+            };
+        };
+    };
+};
 
+function removeProduct(itemId){
+    // console.log(itemId);
+    $.ajax({
+        url:`/api/manager/${itemId}`,
+        method:"DELETE"
+    })
+    .then(function(res){
+        if(res.success){
+            // alert("Item successfully removed from cart.");
+        }
+        else{
+            alert("Unable to remove from cartDb.");
+        };
+        normalOrLow();
+    });
 };
 
 function changeView(view) {
@@ -190,16 +258,14 @@ $('#delete').click(function(){
 
 $("#addBtn").click(function(event){
     event.preventDefault();
-    if($("#addName").val().trim()&&
-    $("#addPrice").val().trim()&&
-    $("#addQuantity").val().trim()&&
-    $("#addImage").val().trim()&&
-    $("#addDepartment").val().trim()){
-        postNewProduct();
-    }
-    else{
-        alert("Please fill in all fields.");
-    }
+    let newProduct={
+        name:$("#addName").val().trim(),
+        price:$("#addPrice").val().trim(),
+        availQty:$("#addQuantity").val().trim(),
+        imageUrl:$("#addImage").val().trim(),
+        department:$("#addDepartment").val().trim()
+    };
+    validateNewProduct(newProduct);
 });
 
 $("#upBtn").click(function(e){
@@ -212,16 +278,7 @@ $("#upBtn").click(function(e){
 $("#deleteBtn").click(function(e){
     e.preventDefault();
     let number=$("#deleteId").val().trim();
-    if(number===""){
-        alert("Please enter a product ID in the entry field.");
-    }
-    else if(parseInt(number)){
-    removeProduct(number);
-    }
-    else{
-        alert("Please enter a number into the field.");
-    };
-
+    validateDelete(number);
 })
 
 

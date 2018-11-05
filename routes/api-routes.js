@@ -56,7 +56,7 @@ module.exports=function(app){
     });
 
     // adds item to the productDb
-    app.post('/api/products', function (req, res) {
+    app.post('/api/manager/products', function (req, res) {
         db.Products.create(req.body)
             .then(function (rows) {
                 res.json({ success: true });

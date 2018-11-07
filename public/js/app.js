@@ -1,9 +1,11 @@
 // Initialize values
 let products=[];
 let cart=[];
+let lastPurchase=[];
 let subTotal=0;
 const itemsDump=$("#itemsDump");
 const cartDump=$("#cartDump");
+const receiptDump=$("#receiptDump");
 let validLogin=false;
 // localStorage.setItem("validUser",validLogin);
 
@@ -20,18 +22,19 @@ function getData() {
             $.get("/api/cart")
                 .then(function (response) {
                     // checks that the item's id attribute matches the original product's id
+                    // console.log(response);
                     response.forEach(function (item) {
                         if (item.productId) {
                             item.id = item.productId;
                         };
-                        // item is only added to the cart from cartDb if it exists in the product database
+                        // item is only added to the cart from cartDb if it exists in the product database and in stock
                         for (let i = 0; i < products.length; i++) {
-                            if (item.id === products[i].id) {
+                            if (item.id === products[i].id&&item.availQty>0) {
                                 cart.push(item);
                             };
                         };
                     });
-                    // cart=response;
+                    // console.log(cart);
                     updateCartIcon();
                 });
         });
@@ -42,7 +45,15 @@ function displayItems(productList){
     itemsDump.empty();
     productList.forEach(function(product){
         // console.log(product);
-        itemsDump.append(`<div class="itemContainer"><div class="row"><div class="col-3 centerBox"><img class="resize" src="${product.imageUrl}"></div><div class="col-7"><h3>${product.name}</h3><h5>$${product.price}</h5><br><h6>${product.availQty} Available</h6></div><div class="col-2 centerBox"><button type="button" class="btn btn-secondary addBtn" id="add${product.id}" value="${product.id}">Add to Cart</button></div></div></div><br>`);
+        let ifAllowed;
+        if(product.availQty<1){
+            ifAllowed=`<button class="btn btn-warning" value="${product.id}">Out of Stock</button>`;
+        }
+        else{
+            ifAllowed=`<button type="button" class="btn btn-secondary addBtn" id="add${product.id}" value="${product.id}">Add to Cart</button>`
+        }
+
+        itemsDump.append(`<div class="itemContainer"><div class="row"><div class="col-3 centerBox"><img class="resize" src="${product.imageUrl}"></div><div class="col-7"><h3>${product.name}</h3><h5>$${product.price}</h5><br><h6>${product.availQty} Available</h6></div><div class="col-2 centerBox">${ifAllowed}</div></div></div><br>`);
     });
 };
 
@@ -193,26 +204,53 @@ function displayCart(cartList){
 
         let mathCost=item.buying*item.price;
 
-        cartDump.append(`<div class="cartItemContainer"><div class="row"><div class="col-3 centerBox"><img class="cartSize" src="${item.imageUrl}"></div><div class="col-6"><h6>${item.name}</h6><button type="button" class="btn btn-warning delBtn" id="remove${item.id}" value="${item.id}">Remove</button></div><div class="col-3"><br><div id="cost${item.id}">$${mathCost.toFixed(2)}</div><br><br>${dropdown}</div></div></div><br>`);
+        cartDump.append(`<div class="cartItemContainer"><div class="row"><div class="col-3 centerBox"><img class="cartSize" src="${item.imageUrl}"></div><div class="col-6"><h6>${item.name}</h6><button type="button" class="btn btn-warning delBtn" id="remove${item.id}" value="${item.id}">Remove</button></div><div class="col-3"><br><div id="cost${item.id}">$${mathCost.toFixed(2)}</div><br>${dropdown}</div></div></div><br>`);
     });
-    findSubTotal();
+    findSubTotal("cart");
     updateCartIcon();
 };
 
-function findSubTotal(){
+function findSubTotal(option){
     let runningCost=0;
-    cart.forEach(function(item){
-        // console.log(item);
-        let itemSub=item.price*item.buying;
-        // console.log(itemSub);
-        runningCost+=(itemSub);
-    // console.log("Running cost: "+runningCost);
-});
-    subTotal=runningCost;
-    // console.log("Subtotal: "+subTotal);
+    
     // Update display for subtotal in cart
-    $("#subTotal").html(`<h6>Subtotal:<br> $${subTotal.toFixed(2)}</h6>`);
-}
+    switch (option) {
+        case "cart":
+        cart.forEach(function(item){
+            // console.log(item);
+            let itemSub=item.price*item.buying;
+            // console.log(itemSub);
+            runningCost+=(itemSub);
+        // console.log("Running cost: "+runningCost);
+    });
+        subTotal=runningCost;
+        // console.log("Subtotal: "+subTotal);
+        $("#subTotal").html(`<h6>Subtotal:<br> $${subTotal.toFixed(2)}</h6>`);
+            break;
+
+        case "receipt":
+        lastPurchase.forEach(function(item){
+            // console.log(item);
+            let itemSub=item.price*item.buying;
+            // console.log(itemSub);
+            runningCost+=(itemSub);
+        // console.log("Running cost: "+runningCost);
+    });
+        subTotal=runningCost;
+        // console.log("Subtotal: "+subTotal);
+        $("#receiptTotal").html(`
+        <div class="row">
+        <div class="col-3"></div>
+        <div class="col-3"><h6>Subtotal:<br> $${subTotal.toFixed(2)}</h6></div>
+        <div class="col-3"></div>
+        <div class="col-3"><h6>Total:<br> $${(subTotal*1.0825).toFixed(2)}</h6></div>
+        </div>`);
+            break;
+
+        default:
+            break;
+    };
+};
 
 function updateCart(id,quantity){
     // console.log("ID: "+id);
@@ -299,6 +337,10 @@ function checkoutPurchase(cartArr) {
                     // alert("There are enough of all the products.");
                     // there are enough of the items, update the database quantity
                     // console.log(cart);
+                    lastPurchase=cart;
+                    // console.log(lastPurchase);
+                    fillReceipt();
+                    $("#receiptModal").modal();
                     for (let i = 0; i < cart.length; i++) {
                         // console.log(response[i].availQty-cart[i].buying);
                         let newQuantitiy=response[i].availQty-cart[i].buying;
@@ -311,6 +353,7 @@ function checkoutPurchase(cartArr) {
                             if(res.success){
                                 // console.log(`Quantity updated for item ${cart[i].id}`);
                                 getData();
+
                             }
                             else{
                                 alert("Something went wrong.");
@@ -318,15 +361,32 @@ function checkoutPurchase(cartArr) {
                         });
                     };
                     $.ajax({
-                        url:'/api/checkout/cart/',
-                        method:"DELETE"
-                    }).then(function(response){
+                        url: '/api/checkout/cart/',
+                        method: "DELETE"
+                    }).then(function (response) {
                         // console.log(response);
+                        cart = [];
+                        updateCartIcon();
                     });
                 };
             });
     };
 };
+
+function fillReceipt(){
+    // console.log(lastPurchase);
+    receiptDump.empty();
+    lastPurchase.forEach(function(item){
+        // console.log(item);
+        let mathCost=item.buying*item.price;
+        receiptDump.append(`
+
+        <div class="cartItemContainer"><div class="row"><div class="col-3 centerBox"><img class="cartSize" src="${item.imageUrl}"></div><div class="col-6"><h6>${item.buying}x ${item.name}</h6></div><div class="col-3"><br><div id="cost${item.id}">$${mathCost.toFixed(2)}</div><br><br></div></div></div><br>
+
+        `)
+    })
+    findSubTotal("receipt");
+}
 
 function checkLogin(object){
     // console.log(object);

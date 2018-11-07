@@ -4,6 +4,8 @@ let cart=[];
 let subTotal=0;
 const itemsDump=$("#itemsDump");
 const cartDump=$("#cartDump");
+let validLogin=false;
+// localStorage.setItem("validUser",validLogin);
 
 // // Functions
 // Grabs the product data from the database
@@ -321,6 +323,27 @@ function checkoutPurchase(cartArr) {
     };
 };
 
+function checkLogin(object){
+    // console.log(object);
+    $.ajax({
+        url:'/login',
+        method:"POST",
+        data:object
+    })
+    .then(function(response){
+        // console.log(response.success);
+        if(response.success){
+            validLogin=true;
+            localStorage.setItem("validUser",validLogin);
+            window.location='/manager';
+        }
+        else{
+            localStorage.setItem("validUser",validLogin);
+            alert("Login failed, try again.");
+        }
+    });
+}
+
 // // Event Handlers
 // Displays cart
 $("#cartIcon").on('click',function(){
@@ -354,6 +377,23 @@ $("#cartDump").on('change','.quantity-dropdown',function(){
 
     let thisQuantity=$(this).val();
     updateCart(thisId,thisQuantity);
+})
+$("#managerLogin").click(function(){
+    $("#loginModal").modal();
+})
+$("#loginBtn").click(function(){
+    if($("#username").val().trim()===""||$("#password").val().trim()===""){
+        alert("Please fill all forms.");
+        localStorage.setItem("validUser",validLogin);
+    }
+    else{
+        let login={
+        username:$("#username").val().trim(),
+        password:$("#password").val().trim()
+    };
+    // console.log(login);
+    checkLogin(login);
+    }
 })
 
 // // at page load, grab items from server then render all product data to display

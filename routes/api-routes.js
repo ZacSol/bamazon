@@ -74,6 +74,23 @@ module.exports=function(app){
             });
     });
 
+    app.post('/login',function(req,res){
+        db.Managers.findOne({
+            where:{username:req.body.username}
+        }).then(function(response){
+            // console.log(response);
+            // res.json(response);
+            if(response.username===req.body.username&&response.password===req.body.password){
+            res.json({success:true});
+            }
+            else{
+                res.json({success:false})
+            }
+        }).catch(function(err){
+            res.json({error:err});
+        });
+    });
+
     // manager is able to change available quantity
     app.put('/api/manager/:id',function(req,res){
         db.Products.update(req.body,{

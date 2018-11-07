@@ -5,8 +5,22 @@ const upBar=$("#upBar");
 const delBar=$("#deleteBar");
 let products=[];
 let currentView="view";
+let validLogin=localStorage.getItem("validUser");
+// console.log(validLogin);
 
 // Functions
+function checkValidUser(bool){
+    // console.log(bool);
+    if(bool){
+        getData();
+        localStorage.removeItem('validUser');
+    }
+    else{
+        window.location="/";
+        alert("Please log in.");
+    }
+};
+
 function getData() {
     $.get("/api/products")
         .then(function (res) {
@@ -39,6 +53,11 @@ function validateNewProduct(newProduct){
         else{
             // price and quantity are numbers
             postNewProduct(newProduct);
+            $("#addName").val("");
+            $("#addPrice").val('');
+            $("#addQuantity").val('');
+            $("#addImage").val("");
+            $("#addDepartment").val("");
         };
     };
 };
@@ -52,7 +71,7 @@ function postNewProduct(newProduct){
     }).then(function(response){
         // console.log(response);
         if(response.success){
-            getData();
+            normalOrLow();
         }
         else{
             alert("Product was not added, please try again.");
@@ -115,6 +134,8 @@ function changeQuantity(id,quantity){
         if(response.success){
             // alert("They quantity has been successfully updated.");
             normalOrLow();
+            $("#updateId").val("");
+            $("#updateQuantity").val("");
         }
         else{
             alert("There was a problem updating the quantity.");
@@ -143,6 +164,9 @@ function validateDelete(id){
             });
             if(exists){
                 removeProduct(id);
+            }
+            else{
+                alert("Please enter a valid ID.");
             };
         };
     };
@@ -162,6 +186,7 @@ function removeProduct(itemId){
             alert("Unable to remove from cartDb.");
         };
         normalOrLow();
+        $("#deleteId").val("");
     });
 };
 
@@ -283,4 +308,5 @@ $("#deleteBtn").click(function(e){
 
 
 
-getData();
+// getData();
+checkValidUser(validLogin);

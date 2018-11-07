@@ -108,3 +108,8 @@ img.cartSize{
     background-color: #f8f9fa;
     text-align: center;
 }
+#managerLogin{
+    position: fixed;
+    right:10px;
+    bottom: 0px;;
+}

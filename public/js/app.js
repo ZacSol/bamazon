@@ -17,19 +17,24 @@ function getData() {
             // console.log(products);
             displayItems(products);
             // return res;
+            $.get("/api/cart")
+                .then(function (response) {
+                    // checks that the item's id attribute matches the original product's id
+                    response.forEach(function (item) {
+                        if (item.productId) {
+                            item.id = item.productId;
+                        };
+                        // item is only added to the cart from cartDb if it exists in the product database
+                        for (let i = 0; i < products.length; i++) {
+                            if (item.id === products[i].id) {
+                                cart.push(item);
+                            };
+                        };
+                    });
+                    // cart=response;
+                    updateCartIcon();
+                });
         });
-    $.get("/api/cart")
-        .then(function(response){
-            // checks that the item's id attribute matches the original product's id
-            response.forEach(function(item){
-                if(item.productId){
-                    item.id=item.productId;
-                };
-            });
-            cart=response;
-            updateCartIcon();
-        })
-    
 };
 
 //renders the collected items

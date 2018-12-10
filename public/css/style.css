@@ -6,8 +6,10 @@ button{
     margin: 0 auto;
 }
 
-
 /* Class Level */
+.btn{
+    font-size: 0.7rem
+}
 .hidden{
     display: none;
 }
@@ -17,7 +19,7 @@ button{
 }
 img.resize {
     padding:0px;
-    max-width:180px;
+    max-width:25vw;
     max-height:180px;
 }
 img.managerResize{
@@ -42,7 +44,7 @@ img.cartSize{
 }
 .itemContainer{
     border-bottom:solid grey 1px;
-    padding-top:10px;
+    /* padding-top:10px; */
 }
 .delBtn{
     padding: 0px 5px;
@@ -107,9 +109,31 @@ img.cartSize{
     width: 100%;
     background-color: #f8f9fa;
     text-align: center;
+    height: 0.9rem;
 }
 #managerLogin{
     position: fixed;
     right:10px;
-    bottom: 0px;;
+    bottom: 0px;
+    font-size: 0.8rem;
+}
+#cartIcon{
+    font-size: 1.3rem;
+}
+#numInCart{
+    font-size: 1rem;
+}
+@media screen and (max-width:767px){
+    h3{
+        font-size: 1.3rem;
+    }
+    h5{
+        font-size: 1rem;
+    }
+    h6{
+        font-size: 0.8rem;
+    }
+    #footerText{
+        display: none;
+    }
 }
